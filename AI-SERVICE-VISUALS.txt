@@ -1,0 +1,17 @@
+FinniKK service visual revision
+
+Eight service-specific AI visual assets were added under:
+public/images/services/
+
+They are mapped to:
+1. Accounting & Financial Management
+2. Direct Taxation
+3. Indirect Taxation (GST & Customs)
+4. Litigation & Regulatory Defense
+5. Business Setups & Incorporation
+6. Secretarial & Corporate Governance
+7. Licenses & Regulatory Filings
+8. Financial Advisory & Corporate Finance
+
+Visual direction: low text/content inside imagery, high visual impact, dark premium FinniKK navy/blue/cyan/teal, financial/legal/corporate symbolism.
+Original website motion, section structure, and service content remain intact.

@@ -1,0 +1,16 @@
+Final asset mapping from the uploaded ZIP.
+
+Exact transparent PNGs used:
+service image 1.png -> Accounting & Financial Management
+service image 2.png -> Direct Taxation
+service image 3.png -> Litigation & Regulatory Defense
+service image 4.png -> Licenses & Regulatory Filings / compliance
+service image 5.png -> Business Setups & Incorporation
+service image 6.png -> Indirect Taxation (GST & Customs) and Financial Advisory & Corporate Finance
+
+Secretarial & Corporate Governance uses the supplied legal/company-law image because six service images were supplied for eight service groups.
+
+Leader:
+leader image.png -> displayed directly with transparency.
+Removed 3D frame, glow, rings, perspective tilt, artificial background, grayscale and drop-shadow treatment.
+The normal section entrance animation remains.

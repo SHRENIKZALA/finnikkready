@@ -1,0 +1,3 @@
+Revision uses the newly uploaded transparent Managing Partner portrait.
+The portrait itself is not recolored/grayscaled. 3D depth is created in the website using layered FinniKK blue/cyan/teal lighting, rings, shadows, perspective, entrance motion, and hover tilt.
+Original site animation system remains in use.

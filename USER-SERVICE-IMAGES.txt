@@ -1,0 +1,15 @@
+This revision uses the six service images supplied directly by the user.
+No crops from a composite image are used.
+No blur or grayscale effect is applied to service imagery.
+
+Mapping:
+Accounting -> supplied accounting dashboard image
+Direct Tax -> supplied TAX image
+GST & Customs -> supplied TAX image
+Litigation -> supplied law image
+Business Setup -> supplied rocket/business setup image
+Secretarial & Governance -> supplied law image
+Licenses & Regulatory -> supplied payroll/compliance image
+Financial Advisory -> supplied international finance image
+
+Two visuals are reused because six images were supplied for eight service categories.

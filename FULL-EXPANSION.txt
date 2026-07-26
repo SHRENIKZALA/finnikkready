@@ -1,0 +1,7 @@
+FinniKK full service expansion:
+- 8 dedicated service detail routes
+- services index page
+- homepage service URLs routed to individual pages where the existing service component uses service.url
+- same FinniKK visual system, ScrollView and motion/react effects
+- deep capability grids, deliverables, engagement process, value contexts, WhatsApp CTA and related services
+- static generation + per-service metadata

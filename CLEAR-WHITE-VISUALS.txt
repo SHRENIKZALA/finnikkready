@@ -1,0 +1,3 @@
+Replaced all eight service visual assets with high-resolution, white-theme, colorful corporate visuals.
+Images are exported at 1600x620 WEBP quality 96 with Lanczos upscaling and light sharpening.
+No intentional blur is applied. Existing FinniKK site structure, service text, motion system, branding, and 3D leadership section are retained.
