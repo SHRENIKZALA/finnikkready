@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "FinniKK | Scaling Possibilities. Accelerating Growth",
   description: "Financial advisory, tax consulting, litigation, corporate legal and business advisory services.",
+  verification: {
+    google: "n0Rqz8kv-JCAFteXKIbWE6rUSS--csNQEDQDCm9_Ty0",
+  },
 };
 
 export default function RootLayout({
