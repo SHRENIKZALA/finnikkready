@@ -130,7 +130,7 @@ export default function FullVersionSection() {
                     </div>
                     <div className="space-y-3">
                       <Image
-                        src="/images/abstract-3.png"
+                        src="/images/abstract-1.png"
                         alt="pro-filler"
                         height={300}
                         width={500}

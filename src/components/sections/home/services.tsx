@@ -18,19 +18,19 @@ const services = [
     title: "Branding",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.",
+    image: "/images/abstract-1.png",
+  },
+  {
+    title: "Branding",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.",
+    image: "/images/abstract-2.png",
+  },
+  {
+    title: "Branding",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.",
     image: "/images/abstract-3.png",
-  },
-  {
-    title: "Branding",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.",
-    image: "/images/abstract-4.png",
-  },
-  {
-    title: "Branding",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.",
-    image: "/images/abstract-5.png",
   },
 ];
 
