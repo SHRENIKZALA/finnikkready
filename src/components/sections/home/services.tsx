@@ -1,156 +1,134 @@
 "use client";
-import {
-  MorphingDialog,
-  MorphingDialogTrigger,
-  MorphingDialogContent,
-  MorphingDialogTitle,
-  MorphingDialogImage,
-  MorphingDialogSubtitle,
-  MorphingDialogClose,
-  MorphingDialogDescription,
-  MorphingDialogContainer,
-} from "@/components/motion-primitives/morphing-dialog";
-import { ScrollView, ScrollViewStaggerWrapper } from "@/components/scroll-view";
-import { ArrowRight, PlusIcon } from "lucide-react";
+import { motion } from "motion/react";
+import { InView } from "@/components/motion-primitives/in-view";
+import { SERVICES_LIST } from "@/content/services";
+import Image from "next/image";
+import Link from "next/link";
+import { 
+  BarChart3, 
+  FileText, 
+  Globe, 
+  ShieldAlert, 
+  Rocket, 
+  BookOpen, 
+  Key, 
+  TrendingUp, 
+  Layers,
+  ArrowUpRight
+} from "lucide-react";
 
-const services = [
-  {
-    title: "Branding",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.",
-    image: "/images/abstract-1.png",
-  },
-  {
-    title: "Branding",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.",
-    image: "/images/abstract-2.png",
-  },
-  {
-    title: "Branding",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.",
-    image: "/images/abstract-3.png",
-  },
+const icons = [
+  BarChart3, FileText, Globe, ShieldAlert, Rocket, BookOpen, Key, TrendingUp, Layers
 ];
 
 export default function ServicesSection() {
   return (
-    <section className="py-16 md:py-32">
-      <div className="mx-auto max-w-5xl space-y-8 px-6 md:space-y-16">
-        <div className="relative z-10 mx-auto max-w-xl space-y-6 text-center">
-          <ScrollView>
-            <h2 className="text-4xl font-medium lg:text-5xl">
-              Tailus UI in numbers
-            </h2>
-          </ScrollView>
-          <ScrollView delay={0.2}>
-            <p>
-              Gemini is evolving to be more than just the models. It supports an
-              entire to the APIs and platforms helping developers and businesses
-              innovate.
-            </p>
-          </ScrollView>
-        </div>
-        <ScrollView stagger delay={0.02}>
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-3">
-            {services.map((service, index) => (
-              <MorphingDialog
-                transition={{
-                  type: "spring",
-                  bounce: 0.05,
-                  duration: 0.25,
-                }}
-                key={service.title + index}
-              >
-                <MorphingDialogTrigger
-                  style={{
-                    borderRadius: "12px",
-                  }}
-                  className="relative  flex aspect-[10/16] flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900"
-                >
-                  <ScrollViewStaggerWrapper className="h-full w-full">
-                    <MorphingDialogImage
-                      src={service.image}
-                      alt="A desk lamp designed by Edouard Wilfrid Buquet in 1925. It features a double-arm design and is made from nickel-plated brass, aluminium and varnished wood."
-                      className="h-full w-full   absolute  "
-                    />
-                    <div className="z-10 flex flex-col justify-between h-full w-full py-5 px-4">
-                      <div className="self-end">
-                        <div className="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1  shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950">
-                          <div className="bg-background group-hover:bg-muted size-8 overflow-hidden rounded-full duration-500 -rotate-45 ">
-                            <div className="flex w-16 -translate-x-1/2 duration-500 ease-in-out group-hover:translate-x-0">
-                              <span className="flex size-8">
-                                <ArrowRight className="m-auto size-4" />
-                              </span>
-                              <span className="flex size-8">
-                                <ArrowRight className="m-auto size-4" />
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center z-20 p-5 rounded-2xl relative bg-secondary">
-                        <MorphingDialogTitle className="">
-                          {index + 1}
-                        </MorphingDialogTitle>
-                        <MorphingDialogSubtitle className="">
-                          {service.title}
-                        </MorphingDialogSubtitle>
-                      </div>
-                    </div>
-                  </ScrollViewStaggerWrapper>
-                </MorphingDialogTrigger>
-                <MorphingDialogContainer>
-                  <MorphingDialogContent
-                    style={{
-                      borderRadius: "24px",
-                    }}
-                    className="pointer-events-auto relative flex h-auto w-full flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-[500px]"
-                  >
-                    <MorphingDialogImage
-                      src={service.image}
-                      alt="A desk lamp designed by Edouard Wilfrid Buquet in 1925. It features a double-arm design and is made from nickel-plated brass, aluminium and varnished wood."
-                      className="h-full w-full"
-                    />
-                    <div className="p-6">
-                      <div className="flex items-center gap-4">
-                        <MorphingDialogTitle className="text-2xl text-zinc-700 dark:text-zinc-400">
-                          {index + 1} {" ."}
-                        </MorphingDialogTitle>
-                        <MorphingDialogSubtitle className="text-2xl text-zinc-950 dark:text-zinc-50">
-                          {service.title}
-                        </MorphingDialogSubtitle>
-                      </div>
-                      <MorphingDialogDescription
-                        disableLayoutAnimation
-                        variants={{
-                          initial: { opacity: 0, scale: 0.8, y: 100 },
-                          animate: { opacity: 1, scale: 1, y: 0 },
-                          exit: { opacity: 0, scale: 0.8, y: 100 },
-                        }}
-                      >
-                        <p className="mt-2 text-zinc-500 dark:text-zinc-500">
-                          {service.description}
-                        </p>
-
-                        <a
-                          className="mt-2 inline-flex text-zinc-500 underline"
-                          href="https://www.are.na/block/12759029"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Are.na block
-                        </a>
-                      </MorphingDialogDescription>
-                    </div>
-                    <MorphingDialogClose className="text-zinc-50" />
-                  </MorphingDialogContent>
-                </MorphingDialogContainer>
-              </MorphingDialog>
-            ))}
+    <section className="py-24 md:py-32 relative overflow-hidden" id="services">
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 -z-10 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent blur-3xl" />
+      
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="max-w-2xl">
+            <motion.p 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="text-sm font-bold uppercase tracking-[.2em] text-primary mb-4"
+            >
+              Our Expertise
+            </motion.p>
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-4xl font-medium lg:text-6xl tracking-tight"
+            >
+              Precision Engineered <br />
+              <span className="text-muted-foreground">Business Solutions.</span>
+            </motion.h2>
           </div>
-        </ScrollView>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="max-w-md"
+          >
+            <p className="text-muted-foreground leading-relaxed">
+              We connect financial, tax, and legal expertise into a unified framework designed for growth, compliance, and strategic defense.
+            </p>
+          </motion.div>
+        </div>
+
+        <div className="bento-grid">
+          {SERVICES_LIST.map((service, index) => {
+            const Icon = icons[index % icons.length];
+            const isLarge = index === 0 || index === 4 || index === 7;
+            
+            return (
+              <InView
+                key={service.name}
+                variants={{
+                  hidden: { opacity: 0, y: 20, scale: 0.95 },
+                  visible: { opacity: 1, y: 0, scale: 1 }
+                }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+                viewOptions={{ once: true, margin: "0px 0px -100px 0px" }}
+                className={isLarge ? "lg:col-span-2 lg:row-span-2" : "lg:col-span-1 lg:row-span-1"}
+              >
+                <Link href={service.url} className="group relative flex h-full w-full flex-col overflow-hidden rounded-[2.5rem] border bg-card p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
+                  {/* Glass Effect Background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  
+                  {/* Icon & Link Arrow */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                      <Icon size={28} />
+                    </div>
+                    <div className="opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1">
+                      <ArrowUpRight className="text-primary" />
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex flex-col flex-grow">
+                    <h3 className="text-2xl font-semibold tracking-tight mb-3">
+                      {service.name}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-3">
+                      {service.description}
+                    </p>
+                    
+                    {/* Tags */}
+                    <div className="mt-auto flex flex-wrap gap-2">
+                      {service.tags.slice(0, 3).map(tag => (
+                        <span key={tag} className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-muted text-muted-foreground border border-border/50">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Image Overlay for Large Cards */}
+                  {isLarge && (
+                    <div className="absolute bottom-0 right-0 w-1/2 h-1/2 -mb-8 -mr-8 opacity-20 transition-all duration-700 group-hover:opacity-40 group-hover:scale-110">
+                       <Image 
+                        src={service.img} 
+                        alt="" 
+                        width={300} 
+                        height={300} 
+                        className="object-contain"
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Hover Border Glow */}
+                  <div className="absolute inset-0 rounded-[2.5rem] border-2 border-primary/0 transition-colors duration-500 group-hover:border-primary/20" />
+                </Link>
+              </InView>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

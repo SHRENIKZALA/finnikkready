@@ -2,46 +2,115 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "motion/react";
+import { Spotlight } from "@/components/ui/spotlight";
+import { TextEffect } from "@/components/motion-primitives/text-effect";
 
 const wa = "https://wa.me/917436006208?text=Hello%20FinniKK%2C%20I%20would%20like%20to%20discuss%20your%20services.";
 
 export default function HeroSection() {
   return (
-    <section className="relative flex min-h-[100svh] items-center overflow-hidden pt-24 md:pt-32">
-      <div className="absolute inset-2 -z-20 overflow-hidden rounded-[2rem] border lg:rounded-[3rem]">
-        <video autoPlay loop muted playsInline preload="metadata" className="size-full object-cover opacity-45 dark:opacity-25 dark:invert">
-          <source src="/hero-light.mp4" type="video/mp4" />
-        </video>
+    <section className="relative flex min-h-[100svh] items-center justify-center overflow-hidden pt-24 md:pt-32 mesh-gradient">
+      {/* Spotlight Effect */}
+      <Spotlight
+        className="-top-40 left-0 md:left-60 md:-top-20"
+        fill="white"
+      />
+      
+      {/* Grid Overlay */}
+      <div className="absolute inset-0 -z-10 grid-overlay opacity-20 dark:opacity-10" />
+      
+      {/* Animated Background Circles */}
+      <div className="absolute inset-0 -z-20 overflow-hidden">
+        <motion.div 
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.1, 0.2, 0.1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute -top-[10%] -left-[10%] size-[50%] rounded-full bg-primary/20 blur-[120px]" 
+        />
+        <motion.div 
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.05, 0.15, 0.05],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1
+          }}
+          className="absolute top-[20%] -right-[10%] size-[40%] rounded-full bg-teal-500/10 blur-[100px]" 
+        />
       </div>
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_35%,rgba(8,124,255,.10),transparent_38%),radial-gradient(circle_at_75%_60%,rgba(17,201,189,.08),transparent_30%)]" />
 
-      <div className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-6 md:py-24">
+      <div className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-6 md:py-24 relative z-10">
         <div className="mx-auto max-w-5xl text-center">
-          <motion.p initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{duration:.55}} className="text-xs font-semibold uppercase tracking-[.28em] text-muted-foreground sm:text-sm">
-            Integrated Business Advisory
-          </motion.p>
-
-          <motion.h1
-            initial={{opacity:0,y:28,filter:"blur(10px)"}}
-            animate={{opacity:1,y:0,filter:"blur(0px)"}}
-            transition={{duration:.9,ease:[.22,1,.36,1]}}
-            className="finnikk-hero-title mt-6 text-balance text-[clamp(2.65rem,8vw,6.7rem)] font-semibold leading-[.95] tracking-[-.055em]"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary mb-8"
           >
-            <span>Scaling Possibilities.</span>
-            <span className="mt-2 block">Accelerating Growth.</span>
-          </motion.h1>
+            <span className="relative flex h-2 w-2 mr-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            Integrated Business Advisory
+          </motion.div>
 
-          <motion.p initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{duration:.7,delay:.28}} className="mx-auto mt-8 max-w-3xl text-pretty text-base leading-7 text-foreground/80 sm:text-lg md:text-xl md:leading-8">
+          <TextEffect
+            per="word"
+            preset="fade-in-blur"
+            className="finnikk-hero-title text-balance text-[clamp(2.65rem,8vw,6.7rem)] font-semibold leading-[.95] tracking-[-.055em]"
+          >
+            Scaling Possibilities. Accelerating Growth.
+          </TextEffect>
+
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
+            className="mx-auto mt-8 max-w-3xl text-pretty text-base leading-7 text-foreground/80 sm:text-lg md:text-xl md:leading-8"
+          >
             FinniKK is a full-service financial advisory, tax consulting, litigation and corporate legal firm helping businesses build, protect and optimize their operations.
           </motion.p>
 
-          <motion.div initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} transition={{duration:.6,delay:.42}} className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button asChild size="lg" className="w-full rounded-xl px-7 sm:w-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row"
+          >
+            <Button asChild size="lg" className="w-full rounded-2xl px-8 py-7 text-lg font-medium shadow-2xl shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 sm:w-auto glow-primary">
               <a href={wa} target="_blank" rel="noopener noreferrer">Consult FinniKK</a>
             </Button>
-            <Button asChild size="lg" variant="ghost" className="w-full rounded-xl px-7 sm:w-auto">
+            <Button asChild size="lg" variant="outline" className="w-full rounded-2xl px-8 py-7 text-lg font-medium border-2 hover:bg-primary/5 transition-all duration-300 sm:w-auto glass">
               <Link href="#services">Explore Services</Link>
             </Button>
+          </motion.div>
+          
+          {/* Scroll Indicator */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 1 }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:block"
+          >
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Scroll</span>
+              <div className="w-[1px] h-12 bg-gradient-to-b from-primary to-transparent relative overflow-hidden">
+                <motion.div 
+                  animate={{ y: [0, 48] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                  className="absolute top-0 left-0 w-full h-1/2 bg-white/50"
+                />
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
