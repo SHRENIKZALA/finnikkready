@@ -117,9 +117,67 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
 }
+
+/* Advanced Glassmorphism */
+.glass {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.1)];
+}
+.dark .glass {
+  @apply bg-black/20 backdrop-blur-xl border border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
+}
+
+/* Interactive Glow */
+.glow-primary {
+  @apply relative overflow-hidden;
+}
+.glow-primary::before {
+  content: "";
+  @apply absolute inset-0 -z-10 bg-primary/20 blur-3xl opacity-0 transition-opacity duration-500;
+}
+.glow-primary:hover::before {
+  @apply opacity-100;
+}
+
+/* Animated Mesh Background */
+.mesh-gradient {
+  background-color: var(--background);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(8, 124, 255, 0.15) 0px, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(17, 201, 189, 0.1) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(7, 27, 69, 0.15) 0px, transparent 50%);
+}
+.dark .mesh-gradient {
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(8, 124, 255, 0.2) 0px, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(17, 201, 189, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(7, 27, 69, 0.2) 0px, transparent 50%);
+}
+
+/* Advanced Grid Overlay */
+.grid-overlay {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, color-mix(in oklab, currentColor 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, currentColor 5%, transparent) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+}
+
+/* Bento Grid Utilities */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 240px;
+  }
+}
+
 
 
 /* FinniKK brand accents */

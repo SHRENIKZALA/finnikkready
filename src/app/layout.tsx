@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { HeroHeader } from "@/components/header";
 import FinniKKNavigationLoader from "@/components/finnikk-navigation-loader";
+import { BackgroundPaths } from "@/components/ui/background-paths";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
+          <BackgroundPaths />
           <HeroHeader />
           <FinniKKNavigationLoader />
           {children}
