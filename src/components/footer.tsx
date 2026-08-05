@@ -1,42 +1,95 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Mail, MessageCircle, ArrowUpRight } from "lucide-react";
+import { MapPin, Mail, MessageCircle, ArrowUpRight, Linkedin, Twitter, Github } from "lucide-react";
 import { ScrollView } from "./scroll-view";
+import { motion } from "motion/react";
 
-const wa="https://wa.me/917436006208?text=Hello%20FinniKK%2C%20I%20would%20like%20to%20discuss%20your%20services.";
+const wa = "https://wa.me/917436006208?text=Hello%20FinniKK%2C%20I%20would%20like%20to%20discuss%20your%20services.";
 
 export default function FooterSection() {
   return (
-    <footer className="border-t bg-zinc-50 py-16 dark:bg-zinc-950 md:py-24">
-      <div className="mx-auto max-w-6xl px-6">
-        <ScrollView>
-          <div className="grid gap-12 lg:grid-cols-[1.2fr_.8fr_.9fr]">
-            <div>
-              <Image src="/brand/finnikk-logo.png" alt="FinniKK" width={300} height={100} className="h-14 w-auto object-contain dark:brightness-0 dark:invert"/>
-              <p className="mt-6 max-w-md leading-7 text-muted-foreground">Integrated financial advisory, tax consulting, litigation, regulatory and corporate services for businesses navigating growth and complexity.</p>
-              <a href={wa} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 rounded-full border bg-background px-5 py-3 text-sm font-medium transition hover:bg-muted"><MessageCircle className="size-4"/>Consult FinniKK</a>
-            </div>
-            <div>
-              <p className="font-semibold">Explore</p>
-              <div className="mt-5 grid gap-3 text-sm text-muted-foreground">
-                <Link href="/#about" className="hover:text-foreground">About</Link><Link href="/services" className="hover:text-foreground">Services</Link><Link href="/#industries" className="hover:text-foreground">Industries</Link><Link href="/#leadership" className="hover:text-foreground">Leadership</Link><Link href="/#testimonials" className="hover:text-foreground">Client Perspectives</Link><Link href="/#contact" className="hover:text-foreground">Contact</Link>
-              </div>
-            </div>
-            <div>
-              <p className="font-semibold">Ahmedabad Office</p>
-              <div className="mt-5 space-y-4 text-sm text-muted-foreground">
-                <div className="flex gap-3"><MapPin className="mt-0.5 size-4 shrink-0"/><span>Ahmedabad, Gujarat 382481, India</span></div>
-                <a href="mailto:zalashrenik1811@gmail.com" className="flex gap-3 hover:text-foreground"><Mail className="mt-0.5 size-4 shrink-0"/><span>zalashrenik1811@gmail.com</span></a>
-                <a href={wa} target="_blank" rel="noreferrer" className="flex gap-3 hover:text-foreground"><MessageCircle className="mt-0.5 size-4 shrink-0"/><span>+91 74360 06208</span></a>
-                <a href="https://www.google.com/maps/search/?api=1&query=Ahmedabad%20Gujarat%20382481" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-medium text-foreground">Open location in Maps <ArrowUpRight className="size-4"/></a>
+    <footer className="relative border-t bg-zinc-50 dark:bg-zinc-950 pt-24 pb-12 overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-t from-primary/5 to-transparent blur-3xl -z-10" />
+      
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="grid gap-16 lg:grid-cols-12 mb-20">
+          <div className="lg:col-span-5 space-y-8">
+            <Link href="/" className="inline-block">
+              <Image 
+                src="/brand/finnikk-logo.png" 
+                alt="FinniKK" 
+                width={200} 
+                height={60} 
+                className="h-12 w-auto object-contain dark:brightness-0 dark:invert"
+              />
+            </Link>
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-md">
+              Precision-engineered financial advisory, tax consulting, and corporate legal services for businesses navigating global complexity.
+            </p>
+            <div className="flex items-center gap-4">
+              <a href={wa} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-bold uppercase tracking-widest text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300">
+                <MessageCircle size={18} />
+                Consult FinniKK
+              </a>
+              <div className="flex items-center gap-2">
+                {[Linkedin, Twitter, Github].map((Icon, i) => (
+                  <a key={i} href="#" className="size-10 flex items-center justify-center rounded-xl border hover:bg-muted transition-colors">
+                    <Icon size={18} />
+                  </a>
+                ))}
               </div>
             </div>
           </div>
-        </ScrollView>
-        <div className="mt-12 border-t pt-6 text-sm text-muted-foreground md:flex md:items-center md:justify-between">
+          
+          <div className="lg:col-span-7 grid sm:grid-cols-3 gap-12">
+            <div>
+              <h4 className="text-sm font-bold uppercase tracking-[0.2em] mb-6">Explore</h4>
+              <ul className="space-y-4 text-sm text-muted-foreground">
+                <li><Link href="/#about" className="hover:text-primary transition-colors">About Us</Link></li>
+                <li><Link href="/services" className="hover:text-primary transition-colors">Expertise</Link></li>
+                <li><Link href="/#leadership" className="hover:text-primary transition-colors">Leadership</Link></li>
+                <li><Link href="/#approach" className="hover:text-primary transition-colors">Our Approach</Link></li>
+                <li><Link href="/#contact" className="hover:text-primary transition-colors">Connect</Link></li>
+              </ul>
+            </div>
+            
+            <div className="sm:col-span-2">
+              <h4 className="text-sm font-bold uppercase tracking-[0.2em] mb-6">Ahmedabad Office</h4>
+              <div className="space-y-6 text-sm text-muted-foreground">
+                <div className="flex gap-4">
+                  <div className="size-10 shrink-0 flex items-center justify-center rounded-xl bg-muted">
+                    <MapPin size={18} />
+                  </div>
+                  <p className="leading-relaxed">
+                    Ahmedabad, Gujarat 382481, <br /> India
+                  </p>
+                </div>
+                <div className="flex gap-4">
+                  <div className="size-10 shrink-0 flex items-center justify-center rounded-xl bg-muted">
+                    <Mail size={18} />
+                  </div>
+                  <a href="mailto:zalashrenik1811@gmail.com" className="hover:text-primary transition-colors break-all">
+                    zalashrenik1811@gmail.com
+                  </a>
+                </div>
+                <a href="https://www.google.com/maps/search/?api=1&query=Ahmedabad%20Gujarat%20382481" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-bold text-primary group">
+                  View on Map
+                  <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="pt-12 border-t flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
           <p>© {new Date().getFullYear()} FinniKK. All rights reserved.</p>
-          <p className="mt-2 md:mt-0">Scaling Possibilities. Accelerating Growth.</p>
+          <div className="flex items-center gap-8">
+            <Link href="#" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+            <Link href="#" className="hover:text-foreground transition-colors">Terms of Service</Link>
+          </div>
+          <p className="text-primary">Scaling Possibilities. Accelerating Growth.</p>
         </div>
       </div>
     </footer>
