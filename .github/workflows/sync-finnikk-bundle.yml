@@ -30,6 +30,10 @@ jobs:
       
         run: unzip -oq /tmp/finnikkready-bundle.zip -d "$GITHUB_WORKSPACE"
         
+      - name: Preserve workflow file
+      
+        run: git checkout -- .github/workflows/sync-finnikk-bundle.yml
+        
       - name: Commit synchronized source
       
         run: |
@@ -51,6 +55,8 @@ jobs:
             git push origin HEAD:main
             
           fi
+
+
 
 
 
