@@ -1,19 +1,13 @@
 name: Sync Finnikk Bundle
 
-
-
 "on":
 
   workflow_dispatch:
   
-
-
 permissions:
 
   contents: write
   
-
-
 jobs:
 
   sync:
