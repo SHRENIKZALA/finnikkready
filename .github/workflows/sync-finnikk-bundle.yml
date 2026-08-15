@@ -1,1 +1,80 @@
+name: Sync Finnikk Bundle
+
+
+
+"on":
+
+  workflow_dispatch:
+  
+
+
+permissions:
+
+  contents: write
+  
+
+
+jobs:
+
+  sync:
+  
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+      - uses: actions/checkout@v4
+      
+        with:
+        
+          fetch-depth: 0
+          
+      - name: Download current Finnikkready bundle
+      
+        run: curl --fail --location --retry 3 "https://8000-ib2ezngwe5w5loahtvqmj-6cf1ee3c.us3.manus.computer/finnikkready-bundle.zip" --output /tmp/finnikkready-bundle.zip
+        
+      - name: Apply source bundle
+      
+        run: unzip -oq /tmp/finnikkready-bundle.zip -d "$GITHUB_WORKSPACE"
+        
+      - name: Commit synchronized source
+      
+        run: |
+        
+          git config user.name "FinniKK Sync"
+          
+          git config user.email "actions@github.com"
+          
+          git add -A
+          
+          if git diff --cached --quiet; then
+          
+            echo "No bundle changes to commit"
+            
+          else
+          
+            git commit -m "Integrate FinniKK Finance extension"
+            
+            git push origin HEAD:main
+            
+          fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
