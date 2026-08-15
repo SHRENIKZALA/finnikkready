@@ -1,4 +1,5 @@
 import { TenantProvider } from '@/utils/hrm/tenant-context';
+import { RoleGuard } from '@/components/hrm/layout/RoleGuard';
 import { Toaster } from '@/components/hrm/ui/toaster';
 
 export default function HRMLayout({
@@ -8,9 +9,11 @@ export default function HRMLayout({
 }>) {
   return (
     <TenantProvider>
-      <div className="hrm-portal min-h-screen bg-background text-foreground">
-        {children}
-      </div>
+      <RoleGuard>
+        <div className="hrm-portal min-h-screen bg-background text-foreground">
+          {children}
+        </div>
+      </RoleGuard>
       <Toaster />
     </TenantProvider>
   );

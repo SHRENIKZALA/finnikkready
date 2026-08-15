@@ -75,7 +75,8 @@ export default function AddPayslipForm({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { currentTenant } = useTenant();
+  const { currentTenant, userRole } = useTenant();
+  const isAdmin = userRole === 'admin';
 
   useEffect(() => {
     if (currentTenant) {
@@ -263,6 +264,11 @@ export default function AddPayslipForm({
       return;
     }
 
+    if (!isAdmin) {
+      setError('Payslip changes are restricted to administrators.');
+      return;
+    }
+
     try {
       const supabase = createClient();
       const payslipData = {
@@ -300,7 +306,7 @@ export default function AddPayslipForm({
       <Card>
         <CardHeader>
           <CardTitle>
-            {payslipId ? 'Edit Payslip' : 'New Payslip'}
+            {isAdmin ? (payslipId ? 'Edit Payslip' : 'New Payslip') : 'Payslip Details'}
             <span className="ml-2 text-sm font-normal">
               ({PAYSLIP_STATUSES.find(s => s.value === formData.status)?.label})
             </span>
@@ -358,6 +364,7 @@ export default function AddPayslipForm({
                   value={formData.payment_date}
                   onChange={handleInputChange}
                   required
+                  readOnly={!isAdmin}
                 />
               </div>
             </div>
@@ -372,6 +379,7 @@ export default function AddPayslipForm({
                   step="0.01"
                   value={formData.total_allowances}
                   onChange={handleInputChange}
+                  readOnly={!isAdmin}
                 />
               </div>
               <div>
@@ -383,6 +391,7 @@ export default function AddPayslipForm({
                   step="0.01"
                   value={formData.total_overtime}
                   onChange={handleInputChange}
+                  readOnly={!isAdmin}
                 />
               </div>
               <div>
@@ -394,6 +403,7 @@ export default function AddPayslipForm({
                   step="0.01"
                   value={formData.total_deductions}
                   onChange={handleInputChange}
+                  readOnly={!isAdmin}
                 />
               </div>
             </div>
@@ -413,9 +423,10 @@ export default function AddPayslipForm({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="status">Status</Label>
-                <Select
+                  <Select
                   value={formData.status}
                   onValueChange={handleStatusChange}
+                  disabled={!isAdmin}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />
@@ -445,12 +456,14 @@ export default function AddPayslipForm({
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit"
-                disabled={formData.status === 'paid'}
-              >
-                Save
-              </Button>
+              {isAdmin && (
+                <Button
+                  type="submit"
+                  disabled={formData.status === 'paid'}
+                >
+                  Save
+                </Button>
+              )}
             </div>
           </form>
         </CardContent>
@@ -459,7 +472,7 @@ export default function AddPayslipForm({
       {/* Work Logs Section */}
       <Card>
         <CardHeader>
-          <CardTitle>Work Logs</CardTitle>
+          <CardTitle>Related Work Logs</CardTitle>
         </CardHeader>
         <CardContent>
           <table className="w-full">

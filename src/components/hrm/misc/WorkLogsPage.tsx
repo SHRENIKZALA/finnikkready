@@ -58,7 +58,8 @@ export default function WorkLogsPage({ user }: WorkLogsPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('month');
   const [currentDate, setCurrentDate] = useState(new Date());
   const router = useRouter();
-  const { currentTenant } = useTenant();
+  const { currentTenant, userRole, employeeId } = useTenant();
+  const isAdmin = userRole === 'admin';
 
   useEffect(() => {
     if (currentTenant) {
@@ -83,7 +84,7 @@ export default function WorkLogsPage({ user }: WorkLogsPageProps) {
       const { workLogs: data, count } = await getWorkLogs(
         supabase,
         currentTenant!.id,
-        undefined,
+        employeeId ?? undefined,
         startDate,
         endDate,
         viewMode === 'list' ? currentPage : undefined,
@@ -164,6 +165,8 @@ export default function WorkLogsPage({ user }: WorkLogsPageProps) {
   };
 
   const renderActionButtons = (log: WorkLog) => {
+    if (!isAdmin) return null;
+
     if (log.status === 'pending') {
       return (
         <div className="flex space-x-2">
@@ -247,7 +250,9 @@ export default function WorkLogsPage({ user }: WorkLogsPageProps) {
             <div
               key={log.id}
               className="mb-2 p-2 bg-card rounded cursor-pointer hover:bg-muted"
-              onClick={() => router.push(`/work-logs/edit/${log.id}`)}
+              onClick={() => {
+                if (isAdmin) router.push(`/work-logs/edit/${log.id}`);
+              }}
             >
               <div className="flex items-center justify-between">
                 <div className="font-medium text-sm">{log.employee_name}</div>
@@ -285,7 +290,9 @@ export default function WorkLogsPage({ user }: WorkLogsPageProps) {
                 log.status === 'rejected' ? 'bg-red-200 dark:bg-red-900/50' :
                 'bg-yellow-200 dark:bg-yellow-900/50'
               )}
-              onClick={() => router.push(`/work-logs/edit/${log.id}`)}
+              onClick={() => {
+                if (isAdmin) router.push(`/work-logs/edit/${log.id}`);
+              }}
               title={`${log.employee_name} (${log.start_time} - ${log.end_time})`}
             >
               {log.employee_name.charAt(0).toUpperCase()}
@@ -332,7 +339,7 @@ export default function WorkLogsPage({ user }: WorkLogsPageProps) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div className="flex items-center space-x-4">
-            <CardTitle>Work Logs</CardTitle>
+            <CardTitle>{isAdmin ? 'Work Logs' : 'My Work Logs'}</CardTitle>
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
@@ -357,17 +364,19 @@ export default function WorkLogsPage({ user }: WorkLogsPageProps) {
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline">Bulk Import</Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px]">
-                <DialogTitle>Import Work Logs</DialogTitle>
-                <BulkImportWorkLogs onComplete={() => {
-                  loadWorkLogs();
-                }} />
-              </DialogContent>
-            </Dialog>
+            {isAdmin && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Bulk Import</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[600px]">
+                  <DialogTitle>Import Work Logs</DialogTitle>
+                  <BulkImportWorkLogs onComplete={() => {
+                    loadWorkLogs();
+                  }} />
+                </DialogContent>
+              </Dialog>
+            )}
             <Button
               variant="outline"
               size="icon"
@@ -409,7 +418,7 @@ export default function WorkLogsPage({ user }: WorkLogsPageProps) {
                     <th className="p-2">Time</th>
                     <th className="p-2">Duration</th>
                     <th className="p-2">Status</th>
-                    <th className="p-2">Actions</th>
+                    {isAdmin && <th className="p-2">Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -417,7 +426,9 @@ export default function WorkLogsPage({ user }: WorkLogsPageProps) {
                     <tr 
                       key={log.id} 
                       className="border-b hover:bg-muted/50 cursor-pointer"
-                      onClick={() => router.push(`/work-logs/edit/${log.id}`)}
+                      onClick={() => {
+                if (isAdmin) router.push(`/work-logs/edit/${log.id}`);
+              }}
                     >
                       <td className="p-2">{log.employee_name}</td>
                       <td className="p-2">{format(new Date(log.date), 'dd/MM/yyyy')}</td>
@@ -431,18 +442,20 @@ export default function WorkLogsPage({ user }: WorkLogsPageProps) {
                         {calculateDuration(log.start_time, log.end_time, log.break_duration)}
                       </td>
                       <td className="p-2">{getStatusBadge(log.status)}</td>
-                      <td className="p-2">
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            router.push(`/work-logs/edit/${log.id}`);
-                          }}
-                        >
-                          <Settings className="h-4 w-4" />
-                        </Button>
-                      </td>
+                      {isAdmin && (
+                        <td className="p-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(`/work-logs/edit/${log.id}`);
+                            }}
+                          >
+                            <Settings className="h-4 w-4" />
+                          </Button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>

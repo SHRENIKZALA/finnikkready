@@ -28,7 +28,8 @@ export default function PayslipsPage() {
   const router = useRouter();
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), 'yyyyMM'));
   const [contracts, setContracts] = useState<Contract[]>([]);
-  const { currentTenant } = useTenant();
+  const { currentTenant, userRole, employeeId } = useTenant();
+  const isAdmin = userRole === 'admin';
 
   useEffect(() => {
     if (currentTenant) {
@@ -39,7 +40,13 @@ export default function PayslipsPage() {
   const loadContracts = async () => {
     try {
       const supabase = createClient();
-      const { contracts: data } = await getEmployeeContracts(supabase, currentTenant!.id);
+      const { contracts: data } = await getEmployeeContracts(
+        supabase,
+        currentTenant!.id,
+        undefined,
+        undefined,
+        employeeId ?? undefined,
+      );
       if (data) {
         const filteredContracts = data.filter((contract: Contract) => {
           const contractStart = parse(contract.start_date, 'yyyy-MM-dd', new Date());
@@ -58,6 +65,7 @@ export default function PayslipsPage() {
         const { data: payslips } = await supabase
           .from('Payslips')
           .select('id, contract_id, status')
+          .eq('tenant_id', currentTenant!.id)
           .eq('period_start', monthStart);
 
         // Map payslips to contracts
@@ -115,7 +123,7 @@ export default function PayslipsPage() {
   return (
     <Card>
       <CardHeader className="flex justify-between items-center">
-        <CardTitle>Payslips</CardTitle>
+        <CardTitle>{isAdmin ? 'Payslips' : 'My Payslips'}</CardTitle>
         <Select value={selectedMonth} onValueChange={setSelectedMonth}>
           <SelectTrigger>
             <SelectValue placeholder="Select month" />

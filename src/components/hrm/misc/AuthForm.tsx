@@ -26,7 +26,7 @@ export default function AuthForm({ state = 'signin' }: AuthFormProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { setCurrentTenant } = useTenant();
+  const { setCurrentTenant, refreshMembership } = useTenant();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -44,6 +44,7 @@ export default function AuthForm({ state = 'signin' }: AuthFormProps) {
 
         const defaultTenant = await verifyUserTenant(supabase, user.id);
         setCurrentTenant(defaultTenant);
+        await refreshMembership(defaultTenant.id);
         localStorage.setItem('currentTenant', JSON.stringify(defaultTenant));
         router.push('/hrm');
         router.refresh();

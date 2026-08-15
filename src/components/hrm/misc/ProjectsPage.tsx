@@ -25,7 +25,8 @@ export default function ProjectsPage({ user }: ProjectsPageProps) {
   const [itemsPerPage, setItemsPerPage] = useState(DEFAULT_ITEMS_PER_PAGE);
   const [totalItems, setTotalItems] = useState(0);
   const router = useRouter();
-  const { currentTenant } = useTenant();
+  const { currentTenant, userRole } = useTenant();
+  const isAdmin = userRole === 'admin';
   
   useEffect(() => {
     if (currentTenant) {
@@ -90,10 +91,12 @@ export default function ProjectsPage({ user }: ProjectsPageProps) {
     <div className="container mx-auto">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Project List</CardTitle>
-          <Link href="/hrm/projects/add">
-            <Button variant="default">+ Add New</Button>
-          </Link>
+          <CardTitle>{isAdmin ? 'Project List' : 'Assigned Projects'}</CardTitle>
+          {isAdmin && (
+            <Link href="/hrm/projects/add">
+              <Button variant="default">+ Add New</Button>
+            </Link>
+          )}
         </CardHeader>
         <CardContent>
           <table className="w-full">
@@ -105,15 +108,17 @@ export default function ProjectsPage({ user }: ProjectsPageProps) {
                 <th className="p-2">Start Date</th>
                 <th className="p-2">End Date</th>
                 <th className="p-2">Deal Status</th>
-                <th className="p-2">Actions</th>
+                {isAdmin && <th className="p-2">Actions</th>}
               </tr>
             </thead>
             <tbody>
               {projects?.map((project) => (
                 <tr 
                   key={project.id} 
-                  className="border-b hover:bg-muted/50 cursor-pointer"
-                  onClick={() => router.push(`/projects/edit/${project.id}`)}
+                  className={`border-b hover:bg-muted/50 ${isAdmin ? 'cursor-pointer' : ''}`}
+                  onClick={() => {
+                    if (isAdmin) router.push(`/projects/edit/${project.id}`);
+                  }}
                 >
                   <td className="p-2">{project.code}</td>
                   <td className="p-2">{project.name}</td>
@@ -125,18 +130,20 @@ export default function ProjectsPage({ user }: ProjectsPageProps) {
                       {project.deal_status}
                     </span>
                   </td>
-                  <td className="p-2">
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/projects/edit/${project.id}`);
-                      }}
-                    >
-                      <Settings className="h-4 w-4" />
-                    </Button>
-                  </td>
+                  {isAdmin && (
+                    <td className="p-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/projects/edit/${project.id}`);
+                        }}
+                      >
+                        <Settings className="h-4 w-4" />
+                      </Button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

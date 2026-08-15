@@ -75,7 +75,8 @@ export default function AddWorkLogForm({ workLogId, user }: AddWorkLogFormProps)
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase: SupabaseClient = createClient();
-  const { currentTenant } = useTenant();
+  const { currentTenant, userRole, employeeId } = useTenant();
+  const isAdmin = userRole === 'admin';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,12 +85,21 @@ export default function AddWorkLogForm({ workLogId, user }: AddWorkLogFormProps)
       try {
         setLoading(true);
         // Fetch employees
-        const { employees: employeesData } = await getEmployees(supabase, currentTenant.id);
+        const { employees: employeesData } = await getEmployees(
+          supabase,
+          currentTenant.id,
+          undefined,
+          undefined,
+          employeeId ?? undefined,
+        );
         if (employeesData) {
           setEmployees(employeesData.map(emp => ({
             id: emp.id,
             name: `${emp.given_name} ${emp.surname}`
           })));
+        }
+        if (!isAdmin && employeeId) {
+          setFormData((previous) => ({ ...previous, employee_id: employeeId }));
         }
 
         // Fetch schedule types
@@ -129,7 +139,7 @@ export default function AddWorkLogForm({ workLogId, user }: AddWorkLogFormProps)
     };
 
     fetchData();
-  }, [workLogId, currentTenant]);
+  }, [workLogId, currentTenant, employeeId, isAdmin]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -185,8 +195,10 @@ export default function AddWorkLogForm({ workLogId, user }: AddWorkLogFormProps)
       return;
     }
 
+    const scopedEmployeeId = isAdmin ? formData.employee_id : employeeId;
+
     // Validate required fields
-    if (!formData.employee_id || !formData.schedule_type_id || 
+    if (!scopedEmployeeId || !formData.schedule_type_id || 
         !formData.start_time || !formData.end_time || 
         !formData.dates.some(d => d.required && d.date)) {
       setError('Please fill in all required fields.');
@@ -201,7 +213,7 @@ export default function AddWorkLogForm({ workLogId, user }: AddWorkLogFormProps)
       
       // Create work log entries for each date
       const workLogs = validDates.map(dateEntry => ({
-        employee_id: formData.employee_id,
+        employee_id: scopedEmployeeId,
         schedule_type_id: formData.schedule_type_id,
         date: dateEntry.date,
         start_time: formData.start_time + ':00',
@@ -304,28 +316,34 @@ export default function AddWorkLogForm({ workLogId, user }: AddWorkLogFormProps)
     <div className="container mx-auto max-w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle>{workLogId ? 'Edit Work Log' : 'New Work Log'}</CardTitle>
+          <CardTitle>{workLogId ? 'Edit Work Log' : isAdmin ? 'New Work Log' : 'Submit My Work Log'}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="employee_id">Employee *</Label>
-              <Select
-                value={formData.employee_id}
-                onValueChange={(value) => handleSelectChange('employee_id', value)}
-                required
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select employee" />
-                </SelectTrigger>
-                <SelectContent>
-                  {employees.map((employee) => (
-                    <SelectItem key={employee.id} value={employee.id}>
-                      {employee.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {isAdmin ? (
+                <Select
+                  value={formData.employee_id}
+                  onValueChange={(value) => handleSelectChange('employee_id', value)}
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select employee" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {employees.map((employee) => (
+                      <SelectItem key={employee.id} value={employee.id}>
+                        {employee.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="rounded-md border bg-muted px-3 py-2 text-sm">
+                  {employees[0]?.name ?? 'Your employee profile'}
+                </div>
+              )}
             </div>
 
             <div>

@@ -1,26 +1,31 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { createClient } from '@/utils/hrm/supabase/client';
-import { verifyUserTenant } from '@/utils/hrm/auth-helpers';
-
-interface Tenant {
-  id: string;
-  name: string;
-  subdomain: string;
-}
+import { getUserTenants } from '@/utils/hrm/supabase/queries';
+import type { HrmMemberRole, Tenant, UserTenant } from './types';
 
 interface TenantContextType {
   currentTenant: Tenant | null;
   setCurrentTenant: (tenant: Tenant | null) => void;
   userTenants: Tenant[];
   setUserTenants: (tenants: Tenant[]) => void;
+  userRole: HrmMemberRole | null;
+  employeeId: string | null;
+  isLoading: boolean;
+  refreshMembership: (preferredTenantId?: string) => Promise<void>;
 }
 
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
 
+function clearStoredTenantState() {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem('currentTenant');
+  localStorage.removeItem('userTenants');
+}
+
 export function TenantProvider({ children }: { children: ReactNode }) {
-  const [currentTenant, setCurrentTenant] = useState<Tenant | null>(() => {
+  const [currentTenant, setCurrentTenantState] = useState<Tenant | null>(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('currentTenant');
       return stored ? JSON.parse(stored) : null;
@@ -28,7 +33,7 @@ export function TenantProvider({ children }: { children: ReactNode }) {
     return null;
   });
 
-  const [userTenants, setUserTenants] = useState<Tenant[]>(() => {
+  const [userTenants, setUserTenantsState] = useState<Tenant[]>(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('userTenants');
       return stored ? JSON.parse(stored) : [];
@@ -36,43 +41,116 @@ export function TenantProvider({ children }: { children: ReactNode }) {
     return [];
   });
 
+  const [memberships, setMemberships] = useState<UserTenant[]>([]);
+  const [userRole, setUserRole] = useState<HrmMemberRole | null>(null);
+  const [employeeId, setEmployeeId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const applyMembership = (membership: UserTenant) => {
+    const tenant = membership.tenant as Tenant | undefined;
+    if (!tenant) {
+      throw new Error('Your workspace membership is missing its tenant record.');
+    }
+
+    setCurrentTenantState(tenant);
+    setUserRole(membership.role);
+    setEmployeeId(membership.employee_id ?? null);
+    localStorage.setItem('currentTenant', JSON.stringify(tenant));
+  };
+
+  const refreshMembership = async (preferredTenantId?: string) => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      setMemberships([]);
+      setCurrentTenantState(null);
+      setUserTenantsState([]);
+      setUserRole(null);
+      setEmployeeId(null);
+      clearStoredTenantState();
+      return;
+    }
+
+    const nextMemberships = (await getUserTenants(supabase, user.id)) as UserTenant[] | null;
+    if (!nextMemberships || nextMemberships.length === 0) {
+      await supabase.auth.signOut();
+      throw new Error('No tenant access. Please contact your administrator.');
+    }
+
+    const tenants = nextMemberships
+      .map((membership) => membership.tenant)
+      .filter((tenant): tenant is Tenant => Boolean(tenant));
+    const storedTenantRaw = localStorage.getItem('currentTenant');
+    const storedTenantId = storedTenantRaw ? JSON.parse(storedTenantRaw)?.id : undefined;
+    const selectedMembership = nextMemberships.find(
+      (membership) => membership.tenant?.id === (preferredTenantId ?? currentTenant?.id ?? storedTenantId),
+    ) ?? nextMemberships[0];
+
+    setMemberships(nextMemberships);
+    setUserTenantsState(tenants);
+    localStorage.setItem('userTenants', JSON.stringify(tenants));
+    applyMembership(selectedMembership);
+  };
+
+  const setCurrentTenant = (tenant: Tenant | null) => {
+    if (!tenant) {
+      setCurrentTenantState(null);
+      setUserRole(null);
+      setEmployeeId(null);
+      localStorage.removeItem('currentTenant');
+      return;
+    }
+
+    const membership = memberships.find((candidate) => candidate.tenant_id === tenant.id);
+    setCurrentTenantState(tenant);
+    setUserRole(membership?.role ?? null);
+    setEmployeeId(membership?.employee_id ?? null);
+    localStorage.setItem('currentTenant', JSON.stringify(tenant));
+  };
+
+  const setUserTenants = (tenants: Tenant[]) => {
+    setUserTenantsState(tenants);
+    localStorage.setItem('userTenants', JSON.stringify(tenants));
+  };
+
   useEffect(() => {
+    let mounted = true;
+
     const initializeTenant = async () => {
-      const supabase = createClient();
-      
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user && !currentTenant) {
-          // If we have a user but no tenant, verify and set default tenant
-          const defaultTenant = await verifyUserTenant(supabase, user.id);
-          setCurrentTenant(defaultTenant);
-          setUserTenants([defaultTenant]); // Initialize userTenants with at least the default tenant
-          
-          // Store in localStorage
-          localStorage.setItem('currentTenant', JSON.stringify(defaultTenant));
-          localStorage.setItem('userTenants', JSON.stringify([defaultTenant]));
-        }
+        await refreshMembership();
       } catch (error) {
         console.error('Error initializing tenant:', error);
-        // If there's an error, sign out the user
-        await supabase.auth.signOut();
-        setCurrentTenant(null);
-        setUserTenants([]);
-        localStorage.removeItem('currentTenant');
-        localStorage.removeItem('userTenants');
+        if (mounted) {
+          setCurrentTenantState(null);
+          setUserTenantsState([]);
+          setMemberships([]);
+          setUserRole(null);
+          setEmployeeId(null);
+          clearStoredTenantState();
+        }
+      } finally {
+        if (mounted) setIsLoading(false);
       }
     };
 
     initializeTenant();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (
-    <TenantContext.Provider value={{ 
-      currentTenant, 
-      setCurrentTenant, 
-      userTenants, 
-      setUserTenants 
+    <TenantContext.Provider value={{
+      currentTenant,
+      setCurrentTenant,
+      userTenants,
+      setUserTenants,
+      userRole,
+      employeeId,
+      isLoading,
+      refreshMembership,
     }}>
       {children}
     </TenantContext.Provider>

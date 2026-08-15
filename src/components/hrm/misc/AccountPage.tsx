@@ -20,12 +20,7 @@ import { createApiClient } from '@/utils/hrm/supabase/api';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/hrm/ui/select';
 import { useTenant } from '@/utils/hrm/tenant-context';
 import { getUserTenants } from '@/utils/hrm/supabase/queries';
-
-interface Tenant {
-  id: string;
-  name: string;
-  subdomain: string;
-}
+import type { Tenant } from '@/utils/hrm/types';
 
 export default function AccountPage({
   user
@@ -36,7 +31,7 @@ export default function AccountPage({
   const { toast } = useToast();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const { currentTenant, setCurrentTenant, userTenants, setUserTenants } = useTenant();
+  const { currentTenant, setCurrentTenant, userTenants, setUserTenants, userRole, employeeId } = useTenant();
 
   useEffect(() => {
     const loadTenants = async () => {
@@ -155,6 +150,28 @@ export default function AccountPage({
                 <form>
                   <Input placeholder="Email" value={user.email} disabled />
                 </form>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Access profile</CardTitle>
+                <CardDescription>
+                  Your FinniKK HRM permissions are controlled by your workspace membership.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className={`rounded-full px-3 py-1 text-sm font-semibold ${userRole === 'admin' ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200' : 'bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-200'}`}>
+                    {userRole === 'admin' ? 'Administrator' : 'Staff'}
+                  </span>
+                  {userRole === 'admin' ? (
+                    <span className="text-sm text-muted-foreground">Full HRM workspace visibility and management access.</span>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">
+                      {employeeId ? 'Limited to your assigned employee records and relevant workspace data.' : 'Pending employee assignment by an administrator.'}
+                    </span>
+                  )}
+                </div>
               </CardContent>
             </Card>
             <Card>

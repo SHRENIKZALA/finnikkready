@@ -38,7 +38,8 @@ export default function EmployeeContractsPage({ user }: EmployeeContractsPagePro
   const [itemsPerPage, setItemsPerPage] = useState(DEFAULT_ITEMS_PER_PAGE);
   const [totalItems, setTotalItems] = useState(0);
   const router = useRouter();
-  const { currentTenant } = useTenant();
+  const { currentTenant, userRole, employeeId } = useTenant();
+  const isAdmin = userRole === 'admin';
 
   useEffect(() => {
     if (currentTenant) {
@@ -54,7 +55,8 @@ export default function EmployeeContractsPage({ user }: EmployeeContractsPagePro
         supabase,
         currentTenant!.id,
         currentPage,
-        itemsPerPage
+        itemsPerPage,
+        employeeId ?? undefined
       );
       if (data) {
         setContracts(data);
@@ -113,10 +115,12 @@ export default function EmployeeContractsPage({ user }: EmployeeContractsPagePro
     <div className="container mx-auto">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Employee Contracts</CardTitle>
-          <Link href="/hrm/contracts/add">
-            <Button variant="default">+ Add New</Button>
-          </Link>
+          <CardTitle>{isAdmin ? 'Employee Contracts' : 'My Contract'}</CardTitle>
+          {isAdmin && (
+            <Link href="/hrm/contracts/add">
+              <Button variant="default">+ Add New</Button>
+            </Link>
+          )}
         </CardHeader>
         <CardContent>
           <table className="w-full">
@@ -129,15 +133,17 @@ export default function EmployeeContractsPage({ user }: EmployeeContractsPagePro
                 <th className="p-2">End Date</th>
                 <th className="p-2">Status</th>
                 <th className="p-2">Salary</th>
-                <th className="p-2">Actions</th>
+                {isAdmin && <th className="p-2">Actions</th>}
               </tr>
             </thead>
             <tbody>
               {contracts?.map((contract) => (
                 <tr 
                   key={contract.id} 
-                  className="border-b hover:bg-muted/50 cursor-pointer"
-                  onClick={() => router.push(`/contracts/edit/${contract.id}`)}
+                  className={`border-b hover:bg-muted/50 ${isAdmin ? 'cursor-pointer' : ''}`}
+                  onClick={() => {
+                    if (isAdmin) router.push(`/contracts/edit/${contract.id}`);
+                  }}
                 >
                   <td className="p-2">{contract.employee_name}</td>
                   <td className="p-2">{contract.position_title}</td>
@@ -146,18 +152,20 @@ export default function EmployeeContractsPage({ user }: EmployeeContractsPagePro
                   <td className="p-2">{contract.end_date ? format(new Date(contract.end_date), 'dd/MM/yyyy') : '-'}</td>
                   <td className="p-2">{getContractStatus(contract.start_date, contract.end_date)}</td>
                   <td className="p-2">{contract.base_salary} {contract.currency}</td>
-                  <td className="p-2">
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/contracts/edit/${contract.id}`);
-                      }}
-                    >
-                      <Settings className="h-4 w-4" />
-                    </Button>
-                  </td>
+                  {isAdmin && (
+                    <td className="p-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/contracts/edit/${contract.id}`);
+                        }}
+                      >
+                        <Settings className="h-4 w-4" />
+                      </Button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

@@ -11,7 +11,8 @@ export async function getEmployees(
   supabase: SupabaseClient,
   tenantId: string,
   page?: number,
-  itemsPerPage?: number
+  itemsPerPage?: number,
+  employeeId?: string
 ) {
   let query = supabase
     .from('Employees')
@@ -30,6 +31,10 @@ export async function getEmployees(
     .eq('is_deleted', false)
     .eq('tenant_id', tenantId)
     .order('surname', { ascending: true });
+
+  if (employeeId) {
+    query = query.eq('id', employeeId);
+  }
 
   if (page !== undefined && itemsPerPage !== undefined) {
     const startRow = (page - 1) * itemsPerPage;
@@ -272,7 +277,8 @@ export async function getAllocations(
   supabase: SupabaseClient,
   tenantId: string,
   page?: number,
-  itemsPerPage?: number
+  itemsPerPage?: number,
+  employeeId?: string
 ) {
   let query = supabase
     .from('Allocations')
@@ -282,8 +288,12 @@ export async function getAllocations(
       Projects(name, code)
     `, { count: 'exact' })
     .eq('is_deleted', false)
-    .eq('tenant_id', tenantId)
+      .eq('tenant_id', tenantId)
     .order('start_date', { ascending: false });
+
+  if (employeeId) {
+    query = query.eq('employee_id', employeeId);
+  }
 
   if (page !== undefined && itemsPerPage !== undefined) {
     const startRow = (page - 1) * itemsPerPage;

@@ -77,10 +77,14 @@ export type Tenant = {
   is_deleted: boolean;
 }
 
+export type HrmMemberRole = 'admin' | 'staff';
+
 export type UserTenant = {
   id: string;
   user_id: string;
   tenant_id: string;
+  role: HrmMemberRole;
+  employee_id: string | null;
   created_at: string;
   updated_at: string;
   tenant?: Tenant;

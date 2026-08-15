@@ -31,7 +31,8 @@ export default function AllocationsPage({ user }: AllocationsPageProps) {
   const [totalItems, setTotalItems] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>('calendar');
   const router = useRouter();
-  const { currentTenant } = useTenant();
+  const { currentTenant, userRole, employeeId } = useTenant();
+  const isAdmin = userRole === 'admin';
   
   useEffect(() => {
     if (currentTenant) {
@@ -48,7 +49,8 @@ export default function AllocationsPage({ user }: AllocationsPageProps) {
         supabase,
         currentTenant!.id,
         viewMode === 'list' ? currentPage : undefined,
-        viewMode === 'list' ? itemsPerPage : undefined
+        viewMode === 'list' ? itemsPerPage : undefined,
+        employeeId ?? undefined
       );
       if (allocationData) {
         setAllocations(allocationData);
@@ -148,9 +150,11 @@ export default function AllocationsPage({ user }: AllocationsPageProps) {
             >
               <Grid className="h-4 w-4" />
             </Button>
-            <Link href="/hrm/allocations/add">
-              <Button variant="default">+ Add New</Button>
-            </Link>
+            {isAdmin && (
+              <Link href="/hrm/allocations/add">
+                <Button variant="default">+ Add New</Button>
+              </Link>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -164,33 +168,37 @@ export default function AllocationsPage({ user }: AllocationsPageProps) {
                     <th className="p-2">Start Date</th>
                     <th className="p-2">End Date</th>
                     <th className="p-2">Allocation %</th>
-                    <th className="p-2">Actions</th>
+                    {isAdmin && <th className="p-2">Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
                   {allocations?.map((allocation) => (
                     <tr 
                       key={allocation.id} 
-                      className="border-b hover:bg-muted/50 cursor-pointer"
-                      onClick={() => router.push(`/allocations/edit/${allocation.id}`)}
+                      className={`border-b hover:bg-muted/50 ${isAdmin ? 'cursor-pointer' : ''}`}
+                      onClick={() => {
+                        if (isAdmin) router.push(`/allocations/edit/${allocation.id}`);
+                      }}
                     >
                       <td className="p-2">{allocation.employee_name}</td>
                       <td className="p-2">{allocation.project_name}</td>
                       <td className="p-2">{new Date(allocation.start_date).toLocaleDateString()}</td>
                       <td className="p-2">{new Date(allocation.end_date).toLocaleDateString()}</td>
                       <td className="p-2">{allocation.allocation_percentage}%</td>
-                      <td className="p-2">
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            router.push(`/allocations/edit/${allocation.id}`);
-                          }}
-                        >
-                          <Settings className="h-4 w-4" />
-                        </Button>
-                      </td>
+                      {isAdmin && (
+                        <td className="p-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              router.push(`/allocations/edit/${allocation.id}`);
+                            }}
+                          >
+                            <Settings className="h-4 w-4" />
+                          </Button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
