@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { HeroHeader } from "@/components/header";
-import FinniKKNavigationLoader from "@/components/finnikk-navigation-loader";
-import { BackgroundPaths } from "@/components/ui/background-paths";
+import SiteChrome from "@/components/site-chrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,10 +38,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <BackgroundPaths />
-          <HeroHeader />
-          <FinniKKNavigationLoader />
-          {children}
+          <SiteChrome>{children}</SiteChrome>
         </ThemeProvider>
       </body>
     </html>

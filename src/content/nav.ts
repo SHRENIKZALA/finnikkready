@@ -5,4 +5,5 @@ export const NAV_LINKS = [
   { name: "Industries", href: "/#industries" },
   { name: "Leadership", href: "/#leadership" },
   { name: "Contact", href: "/#contact" },
+  { name: "Staff Login", href: "/hrm/auth/signin" },
 ];

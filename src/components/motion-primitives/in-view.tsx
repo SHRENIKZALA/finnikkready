@@ -1,5 +1,5 @@
 'use client';
-import { ReactNode, useRef } from 'react';
+import { ReactNode, useEffect, useRef, type ComponentPropsWithoutRef } from 'react';
 import {
   motion,
   useInView,
@@ -8,7 +8,7 @@ import {
   UseInViewOptions,
 } from 'motion/react';
 
-export type InViewProps = {
+export type InViewProps = ComponentPropsWithoutRef<'div'> & {
   children: ReactNode;
   variants?: {
     hidden: Variant;
@@ -17,6 +17,7 @@ export type InViewProps = {
   transition?: Transition;
   viewOptions?: UseInViewOptions;
   as?: React.ElementType;
+  onStatusChange?: (status: boolean) => void;
 };
 
 const defaultVariants = {
@@ -30,11 +31,17 @@ export function InView({
   transition,
   viewOptions,
   as = 'div',
+  onStatusChange,
+  ...rest
 }: InViewProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, viewOptions);
 
-  const MotionComponent = motion[as as keyof typeof motion] as typeof as;
+  useEffect(() => {
+    onStatusChange?.(isInView);
+  }, [isInView, onStatusChange]);
+
+  const MotionComponent = motion[as as keyof typeof motion] as any;
 
   return (
     <MotionComponent
@@ -43,6 +50,7 @@ export function InView({
       animate={isInView ? 'visible' : 'hidden'}
       variants={variants}
       transition={transition}
+      {...rest}
     >
       {children}
     </MotionComponent>
