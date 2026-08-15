@@ -7,7 +7,7 @@ import { BackgroundPaths } from "@/components/ui/background-paths";
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isStaffPortal = pathname.startsWith('/hrm');
+  const isStaffPortal = pathname.startsWith('/hrm') || pathname.startsWith('/finance/app');
 
   if (isStaffPortal) return <>{children}</>;
 

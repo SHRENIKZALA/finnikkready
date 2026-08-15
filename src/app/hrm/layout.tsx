@@ -2,6 +2,8 @@ import { TenantProvider } from '@/utils/hrm/tenant-context';
 import { RoleGuard } from '@/components/hrm/layout/RoleGuard';
 import { Toaster } from '@/components/hrm/ui/toaster';
 
+export const dynamic = 'force-dynamic';
+
 export default function HRMLayout({
   children,
 }: Readonly<{
