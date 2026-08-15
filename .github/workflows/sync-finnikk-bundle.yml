@@ -1,1 +1,114 @@
+name: Sync Finnikk HRM bundle
+
+
+
+'on':
+
+  push:
+  
+    branches: [main]
+    
+  workflow_dispatch:
+  
+
+
+permissions:
+
+  contents: write
+  
+
+
+jobs:
+
+  sync-bundle:
+  
+    if: github.event.head_commit.message != 'Sync Finnikk branded HRM extension'
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+      - name: Check out repository
+      
+        uses: actions/checkout@v4
+        
+
+
+      - name: Download prepared Finnikk RBAC bundle
+      
+        env:
+        
+          SOURCE_URL: https://8000-ib2ezngwe5w5loahtvqmj-6cf1ee3c.us3.manus.computer/finnikkready-bundle.zip
+          
+        run: |
+        
+          set -euo pipefail
+          
+          curl --fail --location "$SOURCE_URL" --output /tmp/finnikkready-bundle.zip
+          
+          rm -rf /tmp/finnikkready-src
+          
+          mkdir -p /tmp/finnikkready-src
+          
+          unzip -q /tmp/finnikkready-bundle.zip -d /tmp/finnikkready-src
+          
+          cp -a /tmp/finnikkready-src/. ./
+          
+          rm -f .github/workflows/sync-finnikk-bundle.yml
+          
+
+
+      - name: Commit bundle to main
+      
+        run: |
+        
+          set -euo pipefail
+          
+          git config user.name "github-actions[bot]"
+          
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          git add -A
+          
+          if git diff --cached --quiet; then
+          
+            echo "No bundle changes to commit."
+            
+            exit 0
+            
+          fi
+          
+          git commit -m "Sync Finnikk branded HRM extension"
+          
+          git push origin HEAD:main
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
