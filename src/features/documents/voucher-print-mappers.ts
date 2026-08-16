@@ -1,4 +1,8 @@
 import type { CompanyRecord } from '#/features/companies/company-service.ts'
+import {
+  resolvePartyBillingAddress,
+  resolvePartyShippingAddress,
+} from '#/features/parties/party-address.ts'
 import type { PartyRecord } from '#/features/parties/party-service.ts'
 import type {
   VoucherPrintCompanyInfo,
@@ -35,8 +39,8 @@ export function toPrintParty(party: PartyRecord): VoucherPrintPartyInfo {
     gstin: party.gstin,
     stateCode: party.stateCode,
     pan: party.pan,
-    billingAddress: party.billingAddress,
-    shippingAddress: party.shippingAddress,
+    billingAddress: resolvePartyBillingAddress(party),
+    shippingAddress: resolvePartyShippingAddress(party),
     contactPhone: party.contactPhone,
     contactEmail: party.contactEmail,
   }

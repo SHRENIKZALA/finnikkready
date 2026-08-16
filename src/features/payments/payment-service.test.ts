@@ -117,6 +117,7 @@ async function seedPaymentContext() {
     partyType: 'customer',
     gstin: '27AABCU9603R1ZM',
     stateCode: '27',
+    billingAddress: '21 Market Road, Mumbai, 400001',
     creditLimit: '100000.00',
     paymentTermsDays: 30,
     receivableAccountId: byKey('customer_receivable'),
@@ -129,6 +130,7 @@ async function seedPaymentContext() {
     partyType: 'supplier',
     gstin: '24AABCU9603R1ZM',
     stateCode: '24',
+    billingAddress: '8 Textile Park, Surat, 395003',
     creditLimit: null,
     paymentTermsDays: 15,
     receivableAccountId: null,
@@ -158,7 +160,7 @@ async function seedPaymentContext() {
   })
 
   const invoice = await postSalesInvoice(
-    { invoices, posting: ledgerPosting, stock, items },
+    { invoices, posting: ledgerPosting, stock, items, parties },
     {
       companyId,
       companyStateCode: '27',
@@ -185,7 +187,7 @@ async function seedPaymentContext() {
   )
 
   const bill = await postPurchaseBill(
-    { bills, posting: ledgerPosting, stock },
+    { bills, posting: ledgerPosting, stock, parties },
     {
       companyId,
       companyStateCode: '27',

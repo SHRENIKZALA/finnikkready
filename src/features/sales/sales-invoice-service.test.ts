@@ -87,6 +87,7 @@ async function seedSalesContext() {
     partyType: 'customer',
     gstin: '27AABCU9603R1ZM',
     stateCode: '27',
+    billingAddress: '21 Market Road, Mumbai, 400001',
     creditLimit: '100000.00',
     paymentTermsDays: 30,
     receivableAccountId,

@@ -4,6 +4,7 @@ import { setupDefaultChartOfAccounts } from '#/features/accounting/chart-of-acco
 import { InMemoryLedgerAccountRepository } from '#/features/accounting/ledger-account-store.ts'
 import { InMemoryLedgerPostingRepository } from '#/features/accounting/ledger-posting-store.ts'
 import { InMemoryItemRepository, InMemoryStockStore  } from '#/features/inventory/inventory-store.ts'
+import { createParty } from '#/features/parties/party-service.ts'
 import { InMemoryPartyRepository } from '#/features/parties/party-store.ts'
 import {
   confirmOcrDraft,
@@ -167,6 +168,19 @@ describe('confirmOcrDraft', () => {
     )!.id
 
     const attachments = new InMemoryAttachmentRepository()
+    await createParty(parties, {
+      companyId,
+      name: 'Textile Mills',
+      partyType: 'supplier',
+      gstin: '24AABCU9603R1ZM',
+      stateCode: '24',
+      billingAddress: '8 Textile Park, Surat, 395003',
+      creditLimit: null,
+      paymentTermsDays: 30,
+      payableAccountId,
+      receivableAccountId: null,
+    })
+
     const draft = await createOcrDraft(repository, attachments, {
       companyId,
       attachmentId: 'att-1',
