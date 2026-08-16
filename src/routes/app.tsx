@@ -10,6 +10,7 @@ import { WorkspaceLoadingGate } from '#/features/app-shell/components/workspace-
 import { WorkspaceProvider } from '#/features/app-shell/workspace-context.tsx'
 import { trpcClient } from '#/integrations/tanstack-query/root-provider.tsx'
 import { authClient } from '#/lib/auth-client.ts'
+import { getCurrentSession } from '#/lib/auth-server.ts'
 
 export const Route = createFileRoute('/app')({
   beforeLoad: async ({ location }) => {
@@ -17,6 +18,11 @@ export const Route = createFileRoute('/app')({
       throw redirect({
         to: '/app/dashboard',
       })
+    }
+
+    const serverSession = await getCurrentSession()
+    if (!serverSession) {
+      throw redirect({ to: '/login' })
     }
 
     if (typeof window === 'undefined') return
