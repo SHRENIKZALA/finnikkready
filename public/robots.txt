@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://finnikkglobal.netlify.app/sitemap.xml
+Sitemap: https://finnikkglobal.netlify.app/sitemap-index.xml

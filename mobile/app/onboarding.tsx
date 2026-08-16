@@ -1,0 +1,58 @@
+import { useRouter } from 'expo-router'
+import { useState } from 'react'
+
+import { AuthShell } from '@/components/layout/auth-shell'
+import { FormField } from '@/components/ui/form-field'
+import { PrimaryButton } from '@/components/ui/button'
+import { Text } from '@/tw'
+import { trpcClient } from '@/lib/trpc-client'
+
+export default function OnboardingScreen() {
+  const router = useRouter()
+  const [legalName, setLegalName] = useState('')
+  const [tradeName, setTradeName] = useState('')
+  const [stateCode, setStateCode] = useState('27')
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleCreate() {
+    setError(null)
+    try {
+      await trpcClient.companies.createWithSetup.mutate({
+        legalName,
+        tradeName,
+        gstin: null,
+        stateCode,
+        financialYearStart: `${new Date().getFullYear()}-04-01`,
+        businessType: 'trading',
+      })
+      router.replace('/(app)/(tabs)/dashboard')
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Setup failed')
+    }
+  }
+
+  return (
+    <AuthShell
+      title="Welcome to Finnikk Business OS"
+      subtitle="Create your company workspace and start GST-ready books."
+    >
+      <FormField
+        placeholder="Legal name"
+        value={legalName}
+        onChangeText={setLegalName}
+      />
+      <FormField
+        placeholder="Trade name"
+        value={tradeName}
+        onChangeText={setTradeName}
+      />
+      <FormField
+        placeholder="State code"
+        value={stateCode}
+        onChangeText={setStateCode}
+      />
+      {error ? <Text className="text-destructive">{error}</Text> : null}
+      <PrimaryButton label="Create company" onPress={() => void handleCreate()} />
+    </AuthShell>
+  )
+}
