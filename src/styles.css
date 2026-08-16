@@ -1,0 +1,556 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/ibm-plex-sans';
+@import '@fontsource-variable/jetbrains-mono';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Rich Ledger / Editorial hybrid: neutral near-black chrome on a warm paper
+     canvas (hue 95) plus the five-color semantic system (money-in emerald,
+     money-out rose, gst violet, inventory amber, banking/info sky). With no
+     chromatic primary competing, the semantic tokens are the only color on
+     screen. Chrome values are explicit — there is no brand hue variable, so a
+     token can never silently resolve against the wrong palette. See DESIGN.md. */
+  /* The canvas is a hair off-white while --card stays pure white, so a card
+     reads as a raised surface without needing a hairline border around it. */
+  --workspace: oklch(0.978 0.006 95);
+  --background: oklch(0.978 0.006 95);
+  --foreground: oklch(0.22 0.008 95);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.008 95);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.008 95);
+  --primary: oklch(0.24 0.012 95);
+  --primary-foreground: oklch(0.98 0.004 95);
+  --secondary: oklch(0.955 0.006 95);
+  --secondary-foreground: oklch(0.3 0.01 95);
+  --muted: oklch(0.945 0.006 95);
+  --muted-foreground: oklch(0.52 0.01 95);
+  --accent: oklch(0.94 0.008 95);
+  --accent-foreground: oklch(0.28 0.01 95);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --success: oklch(0.596 0.145 163.225);
+  --success-foreground: oklch(0.979 0.021 166.113);
+  --warning: oklch(0.666 0.179 58.318);
+  --warning-foreground: oklch(0.987 0.022 95.277);
+  --info: oklch(0.588 0.158 241.966);
+  --info-foreground: oklch(0.977 0.013 236.62);
+  --gst: oklch(0.541 0.281 293.009);
+  --gst-foreground: oklch(0.977 0.014 308.299);
+  --money-in: oklch(0.596 0.145 163.225);
+  /* Darkened from L=0.586: the lighter rose cleared 4.5:1 on white but only
+     reached 3.98:1 as `text-money-out` on a `bg-money-out/15` badge. */
+  --money-out: oklch(0.54 0.24 17.585);
+  --inventory: oklch(0.666 0.179 58.318);
+  --banking: oklch(0.588 0.158 241.966);
+  --banking-foreground: oklch(0.977 0.013 236.62);
+  --border: oklch(0.9 0.006 95);
+  --input: oklch(0.9 0.006 95);
+  --ring: oklch(0.45 0.012 95);
+  /* Chart series map 1:1 onto the semantic palette so a trend line always
+     carries the same meaning as its badge/icon elsewhere in the product. */
+  --chart-1: var(--money-in);
+  --chart-2: var(--money-out);
+  --chart-3: var(--gst);
+  --chart-4: var(--inventory);
+  --chart-5: var(--banking);
+  --radius: 0.5rem;
+  --radius-hero: 1.125rem;
+  --ease-precise: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-spring: 220ms;
+  /* Elevation scale — card containers are separated from the canvas by light,
+     not by a hairline. The scale is defined once here; themes only re-tint the
+     three inputs below. `--elevation-edge` is the dark-mode answer to shadows
+     being invisible on dark surfaces and stays transparent in light mode. */
+  --elevation-edge: transparent;
+  --elevation-key: oklch(0.22 0.012 95 / 10%);
+  --elevation-ambient: oklch(0.22 0.012 95 / 9%);
+  --elevation-1:
+    0 0 0 1px var(--elevation-edge), 0 1px 2px -1px var(--elevation-key),
+    0 4px 12px -6px var(--elevation-ambient);
+  --elevation-2:
+    0 0 0 1px var(--elevation-edge), 0 2px 6px -2px var(--elevation-key),
+    0 16px 32px -14px var(--elevation-ambient);
+  --shell-canvas: oklch(0.953 0.014 95);
+  --sidebar: oklch(0.953 0.014 95);
+  --sidebar-foreground: oklch(0.4 0.01 95);
+  --sidebar-primary: oklch(0.24 0.012 95);
+  --sidebar-primary-foreground: oklch(0.98 0.004 95);
+  --sidebar-accent: oklch(0.915 0.01 95);
+  --sidebar-accent-foreground: oklch(0.24 0.012 95);
+  --sidebar-border: oklch(0.888 0.008 95);
+  --sidebar-ring: oklch(0.45 0.012 95);
+  --sidebar-active: oklch(0.898 0.012 95);
+  --sidebar-active-foreground: oklch(0.2 0.012 95);
+}
+
+.dark {
+  /* --card sits above --background here, which is what keeps borderless cards
+     readable in dark mode where a drop shadow does almost nothing. */
+  --workspace: oklch(0.2 0.004 95);
+  --background: oklch(0.2 0.004 95);
+  --foreground: oklch(0.95 0.004 95);
+  --card: oklch(0.235 0.005 95);
+  --card-foreground: oklch(0.95 0.004 95);
+  --popover: oklch(0.235 0.005 95);
+  --popover-foreground: oklch(0.95 0.004 95);
+  --primary: oklch(0.93 0.005 95);
+  --primary-foreground: oklch(0.2 0.006 95);
+  --secondary: oklch(0.28 0.005 95);
+  --secondary-foreground: oklch(0.95 0.004 95);
+  --muted: oklch(0.28 0.005 95);
+  --muted-foreground: oklch(0.72 0.006 95);
+  --accent: oklch(0.3 0.006 95);
+  --accent-foreground: oklch(0.95 0.004 95);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
+  --success: oklch(0.696 0.17 162.48);
+  --success-foreground: oklch(0.393 0.095 152.535);
+  --warning: oklch(0.769 0.188 70.08);
+  --warning-foreground: oklch(0.414 0.112 45.904);
+  --info: oklch(0.685 0.169 237.323);
+  --info-foreground: oklch(0.392 0.09 240.876);
+  --gst: oklch(0.702 0.183 293.541);
+  --gst-foreground: oklch(0.432 0.232 292.759);
+  --money-in: oklch(0.696 0.17 162.48);
+  --money-out: oklch(0.712 0.194 13.428);
+  --inventory: oklch(0.769 0.188 70.08);
+  --banking: oklch(0.685 0.169 237.323);
+  --banking-foreground: oklch(0.392 0.09 240.876);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.7 0.006 95);
+  /* Dark: a drop shadow alone barely registers, so the card keeps a faint
+     top-light edge and a deeper cast shadow. */
+  --elevation-edge: oklch(1 0 0 / 8%);
+  --elevation-key: oklch(0 0 0 / 40%);
+  --elevation-ambient: oklch(0 0 0 / 32%);
+  --chart-1: var(--money-in);
+  --chart-2: var(--money-out);
+  --chart-3: var(--gst);
+  --chart-4: var(--inventory);
+  --chart-5: var(--banking);
+  --shell-canvas: oklch(0.15 0.004 95);
+  --sidebar: oklch(0.15 0.004 95);
+  --sidebar-foreground: oklch(0.8 0.006 95);
+  --sidebar-primary: oklch(0.93 0.005 95);
+  --sidebar-primary-foreground: oklch(0.2 0.006 95);
+  --sidebar-accent: oklch(0.225 0.005 95);
+  --sidebar-accent-foreground: oklch(0.96 0.004 95);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.7 0.006 95);
+  --sidebar-active: oklch(0.275 0.006 95);
+  --sidebar-active-foreground: oklch(0.97 0.004 95);
+}
+
+@theme inline {
+  --font-sans: 'IBM Plex Sans Variable', sans-serif;
+  --font-heading: var(--font-sans);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-gst: var(--gst);
+  --color-gst-foreground: var(--gst-foreground);
+  --color-money-in: var(--money-in);
+  --color-money-out: var(--money-out);
+  --color-inventory: var(--inventory);
+  --color-banking: var(--banking);
+  --color-banking-foreground: var(--banking-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-hero: var(--radius-hero);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-shell-canvas: var(--shell-canvas);
+  --color-workspace: var(--workspace);
+  --font-mono: 'JetBrains Mono Variable', monospace;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      'tnum' 1,
+      'lnum' 1;
+  }
+
+  a[href],
+  button:not(:disabled),
+  [role='button']:not(:disabled),
+  summary,
+  [data-slot='sidebar-menu-button'],
+  [data-slot='sidebar-menu-sub-button'],
+  [data-slot='sidebar-trigger'],
+  [data-slot='sidebar-rail'] {
+    cursor: pointer;
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* App shell — the sidebar sits flat on the shell tint and the workspace floats
+   above it as a card, so chrome recedes and dense data reads as the subject. */
+[data-slot='sidebar-wrapper'] {
+  @apply min-h-svh bg-[var(--shell-canvas)];
+}
+
+[data-slot='sidebar-inner'] {
+  background: var(--sidebar);
+  @apply overflow-hidden ring-0;
+}
+
+[data-slot='sidebar-container'][data-side='left'] {
+  border-right-width: 0;
+}
+
+[data-slot='sidebar-separator'] {
+  width: calc(100% - 1rem);
+  max-width: calc(100% - 1rem);
+  @apply mx-auto shrink-0;
+}
+
+[data-slot='sidebar-rail']::after {
+  display: none;
+}
+
+[data-slot='sidebar-inset'] {
+  background: var(--workspace);
+  @apply md:ring-1 md:ring-border/60;
+}
+
+[data-slot='sidebar-group-label'] {
+  @apply text-sidebar-foreground/55 uppercase tracking-wide;
+}
+
+[data-slot='sidebar-menu-button'] {
+  @apply transition-colors duration-150;
+}
+
+[data-slot='sidebar-menu-button'][data-active='true'] {
+  background: var(--sidebar-active);
+  color: var(--sidebar-active-foreground);
+  @apply font-medium;
+}
+
+[data-slot='sidebar-menu-sub-button'][data-active='true'] {
+  background: color-mix(in oklch, var(--sidebar-active) 70%, var(--sidebar));
+  color: var(--sidebar-active-foreground);
+  @apply font-medium;
+}
+
+/* Nav icons gain a duotone fill on hover/active — the same 16-20% tint the
+   hero surfaces use, so the stroke stays readable instead of turning into a
+   solid blob. `:first-child` keeps the trailing collapsible chevron unfilled,
+   since an open chevron path fills as a triangle. */
+[data-slot='sidebar-menu-button'] > svg:first-child,
+[data-slot='sidebar-menu-sub-button'] > svg:first-child {
+  fill: transparent;
+  transition: fill var(--duration-fast) var(--ease-precise);
+}
+
+[data-slot='sidebar-menu-button']:hover > svg:first-child,
+[data-slot='sidebar-menu-button'][data-active='true'] > svg:first-child,
+[data-slot='sidebar-menu-sub-button']:hover > svg:first-child,
+[data-slot='sidebar-menu-sub-button'][data-active='true'] > svg:first-child {
+  fill: color-mix(in oklch, currentColor 20%, transparent);
+}
+
+[data-slot='sidebar-menu-sub'] {
+  @apply gap-px;
+}
+
+[data-slot='sidebar'] .text-muted-foreground {
+  @apply text-sidebar-foreground/60;
+}
+
+/* Glass surfaces — reserved for command palette, modals/sheets, toasts, and
+   the top app-bar once the page has scrolled. Never applied to tables,
+   ledgers, voucher entry grids, or everyday popovers/selects/menus. See
+   DESIGN.md. */
+[data-slot='dialog-content'],
+[data-slot='sheet-content'] {
+  background: color-mix(in oklch, var(--popover) 92%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+[data-app-header][data-scrolled='true'] {
+  background: color-mix(in oklch, var(--workspace) 78%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  @apply border-b border-border/70 shadow-xs;
+}
+
+.cn-toast {
+  background: color-mix(in oklch, var(--popover) 90%, transparent) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Hero surfaces: dashboard priority cards and empty/onboarding states get the
+   larger radius + duotone icon language. Dense data surfaces intentionally
+   stay flat and tight — see [data-ui='data'] rules below. */
+[data-hero-surface] {
+  border-radius: var(--radius-hero);
+}
+
+.icon-duotone {
+  color: var(--icon-tone, var(--foreground));
+}
+
+.icon-duotone [data-icon-fill] {
+  fill: color-mix(in oklch, var(--icon-tone, var(--foreground)) 16%, transparent);
+  stroke: none;
+}
+
+.icon-duotone [data-icon-stroke] {
+  stroke: var(--icon-tone, var(--foreground));
+  fill: none;
+}
+
+@keyframes count-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-count-up {
+  animation: count-up-fade var(--duration-base) var(--ease-precise) both;
+}
+
+/* UI density: chrome = nav, titles, primary actions; data = tables and grids */
+[data-ui='chrome'] h1 {
+  @apply text-xl font-semibold tracking-tight;
+}
+
+[data-ui='chrome'] [data-slot='button'][data-size='default'] {
+  @apply h-8 min-h-8 text-sm;
+}
+
+[data-ui='chrome'] [data-slot='button'][data-size='lg'] {
+  @apply h-9 text-sm;
+}
+
+[data-ui='data'] [data-slot='table-head'] {
+  @apply h-8 px-2 py-1;
+}
+
+[data-ui='data'] [data-slot='table-cell'] {
+  @apply px-2 py-1;
+}
+
+[data-ui='data'] [data-slot='button'][data-size='default'] {
+  @apply h-7 text-xs;
+}
+
+/* Voucher grid: unlayered so overrides win over component utility classes */
+[data-voucher-grid] table {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+[data-voucher-grid] [data-slot='table-head'] {
+  @apply h-9 border border-border/80 bg-muted/50 px-2 py-0 text-left align-middle font-medium;
+}
+
+[data-voucher-grid] [data-slot='table-cell'] {
+  @apply border border-border/80 p-0 align-middle;
+}
+
+[data-voucher-grid] th[data-voucher-col='item'],
+[data-voucher-grid] td[data-voucher-col='item'] {
+  width: auto;
+}
+
+[data-voucher-grid] th[data-voucher-col='qty'],
+[data-voucher-grid] td[data-voucher-col='qty'] {
+  width: 2.75rem;
+  @apply px-1;
+}
+
+[data-voucher-grid] th[data-voucher-col='unit'],
+[data-voucher-grid] td[data-voucher-col='unit'] {
+  width: 4.75rem;
+}
+
+[data-voucher-grid] th[data-voucher-col='godown'],
+[data-voucher-grid] td[data-voucher-col='godown'] {
+  width: 6.5rem;
+}
+
+[data-voucher-grid] th[data-voucher-col='rate'],
+[data-voucher-grid] td[data-voucher-col='rate'] {
+  width: 4.75rem;
+}
+
+[data-voucher-grid] th[data-voucher-col='disc'],
+[data-voucher-grid] td[data-voucher-col='disc'] {
+  width: 2.75rem;
+  @apply px-1;
+}
+
+[data-voucher-grid] th[data-voucher-col='taxable'],
+[data-voucher-grid] td[data-voucher-col='taxable'],
+[data-voucher-grid] th[data-voucher-col='total'],
+[data-voucher-grid] td[data-voucher-col='total'],
+[data-voucher-grid] th[data-voucher-col='gst'],
+[data-voucher-grid] td[data-voucher-col='gst'] {
+  width: 5.75rem;
+  @apply px-2 text-right;
+}
+
+[data-voucher-grid] th[data-voucher-col='actions'],
+[data-voucher-grid] td[data-voucher-col='actions'] {
+  width: 2.5rem;
+  @apply px-0;
+}
+
+[data-voucher-grid] td[data-voucher-col='qty'] [data-voucher-grid-control],
+[data-voucher-grid] td[data-voucher-col='disc'] [data-voucher-grid-control] {
+  @apply px-1 text-center;
+}
+
+[data-voucher-grid] td[data-voucher-col='rate'] [data-voucher-grid-control] {
+  @apply px-1.5 text-right;
+}
+
+[data-voucher-grid] [data-voucher-grid-cell]:focus-within {
+  @apply relative z-[1] bg-background;
+  box-shadow: inset 0 0 0 2px var(--ring);
+}
+
+[data-voucher-grid] [data-voucher-grid-cell] [data-voucher-grid-control],
+[data-voucher-grid]
+  [data-voucher-grid-cell]
+  [data-slot='input'][data-voucher-grid-control],
+[data-voucher-grid]
+  [data-voucher-grid-cell]
+  [data-slot='select-trigger'][data-voucher-grid-control],
+[data-voucher-grid]
+  [data-voucher-grid-cell]
+  [data-master-lookup][data-voucher-grid-control] {
+  @apply h-9 w-full min-w-0 rounded-none border-0 bg-transparent px-2 py-0 text-sm shadow-none;
+  @apply hover:bg-transparent focus-visible:border-0 focus-visible:ring-0 focus-visible:outline-none;
+  @apply dark:bg-transparent dark:hover:bg-transparent;
+}
+
+[data-voucher-grid]
+  [data-voucher-grid-cell]
+  [data-voucher-grid-control]:disabled {
+  @apply opacity-50;
+}
+
+/* Mobile layout: prevent horizontal page scroll and tighten dense UI */
+@media (max-width: 639px) {
+  [data-ui='chrome'] h1 {
+    @apply text-lg;
+  }
+
+  [data-ui='data'] .text-2xl {
+    @apply text-xl;
+  }
+
+  [data-ui='data'] [data-slot='card-content'].px-0 {
+    @apply -mx-1;
+  }
+
+  [data-ui='data'] [data-slot='card-header'] {
+    @apply gap-3;
+  }
+
+  [data-ui='data'] [data-slot='card-footer'] {
+    @apply flex-col gap-3;
+  }
+
+  [data-ui='data'] [data-slot='chart'] {
+    @apply min-w-0;
+  }
+
+  [data-voucher-grid] {
+    @apply overflow-x-auto;
+  }
+
+  [data-voucher-grid] table {
+    min-width: 42rem;
+  }
+}
