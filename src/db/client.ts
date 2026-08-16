@@ -1,26 +1,51 @@
-import { neon } from '@neondatabase/serverless'
-import { drizzle } from 'drizzle-orm/neon-http'
+import { getConnectionString } from '@netlify/database'
+import { Pool } from 'pg'
+import { drizzle } from 'drizzle-orm/node-postgres'
 
 import * as schema from '#/db/schema.ts'
 
-import type { NeonHttpDatabase } from 'drizzle-orm/neon-http'
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 
-export type AppDatabase = NeonHttpDatabase<typeof schema>
+export type AppDatabase = NodePgDatabase<typeof schema>
 
 let cachedDb: AppDatabase | null | undefined
+let cachedPool: Pool | null = null
 
-/** Shared Neon HTTP client — safe on Cloudflare Workers (no TCP / node-postgres). */
+/** Resolve the branch-aware Netlify connection first, then support explicit Postgres URLs. */
+function resolveConnectionString(): string | undefined {
+  const configured = process.env.DATABASE_URL ?? process.env.NETLIFY_DB_URL
+  if (configured) {
+    return configured
+  }
+
+  try {
+    return getConnectionString()
+  } catch {
+    return undefined
+  }
+}
+
+/**
+ * Shared Postgres client for Netlify Database and external Postgres providers.
+ * The pool is created lazily and cached for the lifetime of the function runtime.
+ */
 export function getDb(): AppDatabase | null {
   if (cachedDb !== undefined) {
     return cachedDb
   }
 
-  if (!process.env.DATABASE_URL) {
+  const connectionString = resolveConnectionString()
+
+  if (!connectionString) {
     cachedDb = null
     return null
   }
 
-  const sql = neon(process.env.DATABASE_URL)
-  cachedDb = drizzle({ client: sql, schema })
+  cachedPool = new Pool({ connectionString })
+  cachedDb = drizzle(cachedPool, { schema })
   return cachedDb
+}
+
+export function getDatabaseConnectionString(): string | undefined {
+  return resolveConnectionString()
 }

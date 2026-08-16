@@ -4,9 +4,9 @@ import pg from 'pg'
 
 config({ path: ['.env.local', '.env'] })
 
-const connectionString = process.env.DATABASE_URL
+const connectionString = process.env.DATABASE_URL ?? process.env.NETLIFY_DB_URL
 if (!connectionString) {
-  console.error('DATABASE_URL is not set. Load .env.local first.')
+  console.error('DATABASE_URL or NETLIFY_DB_URL is not set. Configure a Postgres connection first.')
   process.exit(1)
 }
 
