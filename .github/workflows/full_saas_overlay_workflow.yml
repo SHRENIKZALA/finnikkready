@@ -1,0 +1,38 @@
+name: Apply complete Finnikk Business OS SaaS
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - full-saas-overlay.zip
+
+permissions:
+  contents: write
+
+jobs:
+  apply-overlay:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Replace application with complete SaaS archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf src public mobile packages drizzle docs scripts supabase
+          rm -f next.config.ts middleware.ts postcss.config.mjs eslint.config.mjs package-lock.json todo.md
+          rm -f 'leader image.png' 'service image 1.png' 'service image 2.png' 'service image 3.png' 'service image 4.png' 'service image 5.png' 'service image 6.png'
+          unzip -q full-saas-overlay.zip -d .
+          rm -f full-saas-overlay.zip
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No overlay changes detected.'
+          else
+            git commit -m 'feat: integrate complete Finnikk Business OS accounting SaaS'
+            git push origin HEAD:main
+          fi
