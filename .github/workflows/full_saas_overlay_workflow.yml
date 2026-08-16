@@ -24,8 +24,9 @@ jobs:
           set -euo pipefail
           rm -rf src public mobile packages drizzle docs scripts supabase
           rm -f next.config.ts middleware.ts postcss.config.mjs eslint.config.mjs package-lock.json todo.md
+          rm -f .github/workflows/sync-finnikk-bundle.yml
           rm -f 'leader image.png' 'service image 1.png' 'service image 2.png' 'service image 3.png' 'service image 4.png' 'service image 5.png' 'service image 6.png'
-          unzip -q full-saas-overlay.zip -d .
+          unzip -qo full-saas-overlay.zip -d .
           rm -f full-saas-overlay.zip
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
